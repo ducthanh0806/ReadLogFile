@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
+@Table(name = "logInfos")
 public class LogInfo {
     @Id
     private Long id;

@@ -8,23 +8,23 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
+@Table(name = "users")
 public class User {
-    private String username;
-    private String password;
-    private String email;
-    private String roles;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    public User(String username, String password, String email, String roles) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.roles = roles;
-    }
-
-    public User() {
-
-    }
-
+     
+    @Column(nullable = false, unique = true, length = 45)
+    private String email;
+     
+    @Column(nullable = false, length = 64)
+    private String password;
+     
+    @Column(name = "first_name", nullable = false, length = 20)
+    private String firstName;
+     
+    @Column(name = "last_name", nullable = false, length = 20)
+    private String lastName;
+     
+    // getters and setters are not shown   
 }

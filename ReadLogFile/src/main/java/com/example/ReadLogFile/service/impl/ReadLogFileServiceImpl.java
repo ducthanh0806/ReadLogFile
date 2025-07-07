@@ -19,7 +19,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Service
-public class ReadLogServiceImpl implements ReadLogFileService {
+public class ReadLogFileServiceImpl implements ReadLogFileService {
+	@Autowired
+	ReadLogFileRepository readLogFileRepository;
+	
     @Override
     public ArrayList<LogInfo> readLogFile(File file) throws IOException {
         int numLines = 1000;
@@ -68,5 +71,49 @@ public class ReadLogServiceImpl implements ReadLogFileService {
         Files.write(outputFilePath, json.getBytes());
 
         return logInfos;
+    }
+    
+    
+    public ArrayList<LogInfo> getAllLogInfo() {
+        List<LogInfo> listLog = new ArrayList<LogInfo>();
+
+        readLogFileRepository.findAll().forEach(listLog::add);
+        if (tutorials.isEmpty()) {
+          return new ArrayList<LogInfo>();
+        }
+
+        return listLog;
+    }
+    
+    public LogInfo getLogInfoById (long id) {
+    	LogInfo loginfo = readLogFileRepository.findById(id);
+    	return loginfo
+    }
+    
+    public void createLogInfo (LogInfo loginfo) {
+    	readLogFileRepository.save(new LogInfo(loginfo.getId(), 
+    			loginfo.getLineNo(), loginfo.getLogName(), loginfo.getMessage()));
+    }
+    
+    public void updateLogInfo (long id, LogInfo loginfoUpdate) {
+    	LogInfo loginfo = readLogFileRepository.findById(id);
+    	
+    	if (_tutorial != null) {
+    		loginfo.setId(id);
+    		loginfo.setLineNo(loginfoUpdate.getLineNo());
+    		loginfo.setLogName(loginfoUpdate.getLogName());
+    		loginfo.setMessage(loginfoUpdate.getMessage());
+    		readLogFileRepository.update(loginfo);
+    	}
+    }
+    
+    public int deleteLogInfoById (long id) {
+    	int result = readLogFileRepository.deleteById(id);
+    	return result;
+    }
+    
+    public int deleteAllLogInfo () {
+    	int result = readLogFileRepository.deleteAll();
+    	return result;
     }
 }
