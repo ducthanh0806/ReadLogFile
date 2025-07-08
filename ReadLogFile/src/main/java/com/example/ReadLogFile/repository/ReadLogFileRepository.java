@@ -1,15 +1,16 @@
 package com.example.ReadLogFile.repository;
 
-import java.util.List;
+import com.example.ReadLogFile.model.LogInfo;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.bezkoder.spring.jdbc.oracle.model.LogInfo;
+import java.util.List;
 
 public interface ReadLogFileRepository {
   int save(LogInfo loginfo);
 
   int update(LogInfo loginfo);
 
-  Tutorial findById(Long id);
+  LogInfo findById(Long id);
 
   int deleteById(Long id);
 

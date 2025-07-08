@@ -2,6 +2,8 @@ package com.example.ReadLogFile.repository.impl;
 
 import java.util.List;
 
+import com.example.ReadLogFile.model.LogInfo;
+import com.example.ReadLogFile.repository.ReadLogFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -27,7 +29,7 @@ public class ReadLogFileRepositoryImpl implements ReadLogFileRepository {
   }
 
   @Override
-  public Tutorial findById(Long id) {
+  public LogInfo findById(Long id) {
     try {
       LogInfo loginfo = jdbcTemplate.queryForObject("SELECT * FROM tutorials WHERE id=?",
           BeanPropertyRowMapper.newInstance(LogInfo.class), id);
@@ -44,7 +46,7 @@ public class ReadLogFileRepositoryImpl implements ReadLogFileRepository {
   }
 
   @Override
-  public List<Tutorial> findAll() {
+  public List<LogInfo> findAll() {
     return jdbcTemplate.query("SELECT * from loginfo", BeanPropertyRowMapper.newInstance(LogInfo.class));
   }
 

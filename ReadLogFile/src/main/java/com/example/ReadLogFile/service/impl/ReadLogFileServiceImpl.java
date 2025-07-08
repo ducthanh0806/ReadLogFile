@@ -1,27 +1,22 @@
 package com.example.ReadLogFile.service.impl;
 
 import com.example.ReadLogFile.model.LogInfo;
+import com.example.ReadLogFile.repository.ReadLogFileRepository;
 import com.example.ReadLogFile.service.ReadLogFileService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Service
 public class ReadLogFileServiceImpl implements ReadLogFileService {
 	@Autowired
-	ReadLogFileRepository readLogFileRepository;
+    ReadLogFileRepository readLogFileRepository;
 	
     @Override
     public ArrayList<LogInfo> readLogFile(File file) throws IOException {
@@ -75,45 +70,39 @@ public class ReadLogFileServiceImpl implements ReadLogFileService {
     
     
     public ArrayList<LogInfo> getAllLogInfo() {
-        List<LogInfo> listLog = new ArrayList<LogInfo>();
 
-        readLogFileRepository.findAll().forEach(listLog::add);
-        if (tutorials.isEmpty()) {
-          return new ArrayList<LogInfo>();
+        ArrayList<LogInfo> listLog = new ArrayList<>(readLogFileRepository.findAll());
+        if (listLog.isEmpty()) {
+          return new ArrayList<>();
         }
 
         return listLog;
     }
     
     public LogInfo getLogInfoById (long id) {
-    	LogInfo loginfo = readLogFileRepository.findById(id);
-    	return loginfo
+        return readLogFileRepository.findById(id);
     }
     
     public void createLogInfo (LogInfo loginfo) {
-    	readLogFileRepository.save(new LogInfo(loginfo.getId(), 
+    	readLogFileRepository.save(new LogInfo(loginfo.getId(),
     			loginfo.getLineNo(), loginfo.getLogName(), loginfo.getMessage()));
     }
     
     public void updateLogInfo (long id, LogInfo loginfoUpdate) {
     	LogInfo loginfo = readLogFileRepository.findById(id);
-    	
-    	if (_tutorial != null) {
-    		loginfo.setId(id);
-    		loginfo.setLineNo(loginfoUpdate.getLineNo());
-    		loginfo.setLogName(loginfoUpdate.getLogName());
-    		loginfo.setMessage(loginfoUpdate.getMessage());
-    		readLogFileRepository.update(loginfo);
-    	}
+
+        loginfo.setId(id);
+        loginfo.setLineNo(loginfoUpdate.getLineNo());
+        loginfo.setLogName(loginfoUpdate.getLogName());
+        loginfo.setMessage(loginfoUpdate.getMessage());
+        readLogFileRepository.update(loginfo);
     }
     
     public int deleteLogInfoById (long id) {
-    	int result = readLogFileRepository.deleteById(id);
-    	return result;
+        return readLogFileRepository.deleteById(id);
     }
     
     public int deleteAllLogInfo () {
-    	int result = readLogFileRepository.deleteAll();
-    	return result;
+        return readLogFileRepository.deleteAll();
     }
 }
