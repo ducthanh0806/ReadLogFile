@@ -1,35 +1,31 @@
 package com.example.ReadLogFile.controller;
 
+import com.example.ReadLogFile.dto.LogInfoDto;
 import com.example.ReadLogFile.model.LogInfo;
-import com.example.ReadLogFile.model.UserInfo;
-import com.example.ReadLogFile.repository.UserInfoRepository;
 import com.example.ReadLogFile.service.ReadLogFileService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping("logs")
+@RequestMapping("/logapi")
 public class ReadLogFileController {
     @Autowired
     ReadLogFileService readLogFileService;
 
-    @Autowired
-    private UserInfoRepository userRepo;
-
     @GetMapping("")
     public ResponseEntity<String> readLogFIle() throws IOException {
         try {
-            List<LogInfo> listLog = readLogFileService.readLogFile(new File("C:/Users/thanh/SpringBoot/kernel.log"));
+            List<LogInfoDto> listLog = readLogFileService.readLogFile(new File("C:/Users/thanh/SpringBoot/kernel.log"));
             // Create a Gson instance
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -44,13 +40,15 @@ public class ReadLogFileController {
     }
 
     @GetMapping("/logs")
-    public ResponseEntity<List<LogInfo>> getAllLogInfo() {
+    public ResponseEntity<List<LogInfoDto>> getAllLogInfo() {
         try {
-            List<LogInfo> listLog = readLogFileService.getAllLogInfo();
+//            List<LogInfoDto> listLog = readLogFileService.getAllLogInfo();
+//
+//            if (listLog.isEmpty()) {
+//                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//            }
 
-            if (listLog.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
+            List<LogInfoDto> listLog = new ArrayList<>();
 
             return new ResponseEntity<>(listLog, HttpStatus.OK);
         } catch (Exception e) {
@@ -59,11 +57,11 @@ public class ReadLogFileController {
     }
 
     @GetMapping("/logs/{id}")
-    public ResponseEntity<LogInfo> getLogInfoById(@PathVariable("id") long id) {
-        LogInfo loginfo = readLogFileService.getLogInfoById(id);
+    public ResponseEntity<LogInfoDto> getLogInfoById(@PathVariable("id") long id) {
+        LogInfoDto logInfoDto = readLogFileService.getLogInfoById(id);
 
-        if (loginfo != null) {
-            return new ResponseEntity<>(loginfo, HttpStatus.OK);
+        if (logInfoDto != null) {
+            return new ResponseEntity<>(logInfoDto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -112,11 +110,4 @@ public class ReadLogFileController {
         }
 
     }
-
-    @GetMapping("/users")
-    public String listUsers(Model model) {
-        List<UserInfo> listUsers = userRepo.findAll();
-        model.addAttribute("listUsers", listUsers);
-        return "users";
-   }
 }

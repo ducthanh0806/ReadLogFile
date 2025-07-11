@@ -9,7 +9,7 @@ public class LogInfoMapping {
                 logInfo.getLogName(), logInfo.getMessage());
     }
 
-    public static LogInfo toBook(LogInfoDto LogInfoDto) {
+    public static LogInfo toLogInfo(LogInfoDto LogInfoDto) {
         return new LogInfo(LogInfoDto.id(), LogInfoDto.lineNo(),
                 LogInfoDto.logName(), LogInfoDto.message());
     }

@@ -1,14 +1,19 @@
 package com.example.ReadLogFile.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
-import org.springframework.data.relational.core.mapping.Table;
 
+@Setter
+@Getter
+@Entity
+@Builder
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "USERS")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserInfo {
     @Id
     @Column(name = "USERNAME")

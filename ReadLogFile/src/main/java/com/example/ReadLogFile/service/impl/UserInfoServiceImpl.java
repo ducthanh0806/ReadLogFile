@@ -15,21 +15,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
     @Autowired
-    private UserInfoRepository userInfoRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Override
-    public String login(UserInfoDto userInfoDto) {
+    public UserInfoDto login(UserInfoDto userInfoDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 userInfoDto.username(), userInfoDto.password()
         ));
         if (authentication.isAuthenticated())
-            return "Success";
-        return "Fail";
+            return userInfoDto;
+        return null;
     }
 }

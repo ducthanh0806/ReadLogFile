@@ -1,5 +1,7 @@
 package com.example.ReadLogFile.service.impl;
 
+import com.example.ReadLogFile.dto.LogInfoDto;
+import com.example.ReadLogFile.mapper.LogInfoMapping;
 import com.example.ReadLogFile.model.LogInfo;
 import com.example.ReadLogFile.repository.ReadLogFileRepository;
 import com.example.ReadLogFile.service.ReadLogFileService;
@@ -19,7 +21,7 @@ public class ReadLogFileServiceImpl implements ReadLogFileService {
     ReadLogFileRepository readLogFileRepository;
 	
     @Override
-    public ArrayList<LogInfo> readLogFile(File file) throws IOException {
+    public ArrayList<LogInfoDto> readLogFile(File file) throws IOException {
         int numLines = 1000;
         ArrayList<LogInfo> logInfos = new ArrayList<>();
 
@@ -65,22 +67,31 @@ public class ReadLogFileServiceImpl implements ReadLogFileService {
         // Writing the JSON string to a file
         Files.write(outputFilePath, json.getBytes());
 
-        return logInfos;
+        ArrayList<LogInfoDto> listLogDto = new ArrayList<>();
+        for (LogInfo log : logInfos) {
+            listLogDto.add(LogInfoMapping.toLogInfoDto(log));
+        }
+
+        return listLogDto;
     }
     
     
-    public ArrayList<LogInfo> getAllLogInfo() {
+    public ArrayList<LogInfoDto> getAllLogInfo() {
 
         ArrayList<LogInfo> listLog = new ArrayList<>(readLogFileRepository.findAll());
         if (listLog.isEmpty()) {
           return new ArrayList<>();
         }
-
-        return listLog;
+        ArrayList<LogInfoDto> listLogDto = new ArrayList<>();
+        for (LogInfo log : listLog) {
+            listLogDto.add(LogInfoMapping.toLogInfoDto(log));
+        }
+        return listLogDto;
     }
     
-    public LogInfo getLogInfoById (long id) {
-        return readLogFileRepository.findById(id);
+    public LogInfoDto getLogInfoById (long id) {
+        LogInfo logInfo = readLogFileRepository.findById(id);
+        return LogInfoMapping.toLogInfoDto(logInfo);
     }
     
     public void createLogInfo (LogInfo loginfo) {
