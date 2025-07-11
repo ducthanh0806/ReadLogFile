@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping("/logapi")
+@RequestMapping("/read")
 public class ReadLogFileController {
     @Autowired
     ReadLogFileService readLogFileService;
@@ -33,7 +34,6 @@ public class ReadLogFileController {
             String json = gson.toJson(listLog);
             return new ResponseEntity<>(json, HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
             return new ResponseEntity<>("Error when reading log file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -42,13 +42,11 @@ public class ReadLogFileController {
     @GetMapping("/logs")
     public ResponseEntity<List<LogInfoDto>> getAllLogInfo() {
         try {
-//            List<LogInfoDto> listLog = readLogFileService.getAllLogInfo();
-//
-//            if (listLog.isEmpty()) {
-//                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//            }
+            List<LogInfoDto> listLog = readLogFileService.getAllLogInfo();
 
-            List<LogInfoDto> listLog = new ArrayList<>();
+            if (listLog.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
 
             return new ResponseEntity<>(listLog, HttpStatus.OK);
         } catch (Exception e) {
@@ -68,9 +66,10 @@ public class ReadLogFileController {
     }
 
     @PostMapping("/logs")
-    public ResponseEntity<String> createLogInfo(@RequestBody LogInfo loginfo) {
+    public ResponseEntity<String> createLogInfo() {
         try {
-            readLogFileService.createLogInfo(loginfo);
+            File file = new File("C:/Users/thanh/SpringBoot/TestLog.log");
+            readLogFileService.createLogInfo(file);
             return new ResponseEntity<>("Logs was created successfully.", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -90,23 +89,20 @@ public class ReadLogFileController {
     @DeleteMapping("/logs/{id}")
     public ResponseEntity<String> deleteLogInfoById(@PathVariable("id") long id) {
         try {
-            int result = readLogFileService.deleteLogInfoById(id);
-            if (result == 0) {
-                return new ResponseEntity<>("Cannot find Tutorial with id=" + id, HttpStatus.OK);
-            }
+            readLogFileService.deleteLogInfoById(id);
             return new ResponseEntity<>("Tutorial was deleted successfully.", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Cannot delete tutorial.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Cannot delete this log.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/logs")
     public ResponseEntity<String> deleteAllLogInfo() {
         try {
-            int numRows = readLogFileService.deleteAllLogInfo();
-            return new ResponseEntity<>("Deleted " + numRows + " Tutorial(s) successfully.", HttpStatus.OK);
+            readLogFileService.deleteAllLogInfo();
+            return new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Cannot delete tutorials.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Cannot delete logs.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }

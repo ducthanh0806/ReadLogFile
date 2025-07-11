@@ -8,17 +8,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/userinfo")
+@RequestMapping("/user")
 public class UserInfoController {
 
     @Autowired
     UserInfoService userInfoService;
 
-    @PostMapping("/login")
+    @GetMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserInfoDto userInfoDtoBody)
     {
         UserInfoDto userInfoDto = userInfoService.login(userInfoDtoBody);
         return new ResponseEntity<>("User " + userInfoDto.username() +
-                " is login", HttpStatus.CREATED);
+                " is login", HttpStatus.ACCEPTED);
     }
 }

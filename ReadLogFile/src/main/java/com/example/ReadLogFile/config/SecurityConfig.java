@@ -3,6 +3,7 @@ package com.example.ReadLogFile.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -32,12 +33,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrfCustomizer -> csrfCustomizer.disable());
-        http.authorizeHttpRequests(request->
-                request.requestMatchers("").permitAll()
-                        .anyRequest().authenticated());
-        http.httpBasic(Customizer.withDefaults());
-        http.sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//        http.authorizeHttpRequests(request->
+//                request.requestMatchers("/user/login").permitAll()
+//                        .anyRequest().authenticated());
+//        http.httpBasic(Customizer.withDefaults());
+//        http.sessionManagement(session ->
+//                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 

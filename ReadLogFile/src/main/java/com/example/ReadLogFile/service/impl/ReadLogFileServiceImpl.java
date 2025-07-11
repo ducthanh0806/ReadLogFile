@@ -90,30 +90,64 @@ public class ReadLogFileServiceImpl implements ReadLogFileService {
     }
     
     public LogInfoDto getLogInfoById (long id) {
-        LogInfo logInfo = readLogFileRepository.findById(id);
-        return LogInfoMapping.toLogInfoDto(logInfo);
+        LogInfo logInfo = readLogFileRepository.findLogInfoById(id);
+        if (logInfo != null)
+            return LogInfoMapping.toLogInfoDto(logInfo);
+        else
+            return null;
     }
     
-    public void createLogInfo (LogInfo loginfo) {
-    	readLogFileRepository.save(new LogInfo(loginfo.getId(),
-    			loginfo.getLineNo(), loginfo.getLogName(), loginfo.getMessage()));
+    public void createLogInfo (File file) {
+        ArrayList<String> logString = new ArrayList<>();
+        ArrayList<LogInfo> logInfos = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String logLine;
+            while ((logLine = reader.readLine()) != null) {
+                logString.add(logLine);
+            }
+
+            for (int i = 0; i < logString.size() - 1; i++) {
+                String line = logString.get(i);
+                if (line.contains("Error:") && !line.contains("<entry")) {
+                    LogInfo logInfo = new LogInfo();
+                    logInfo.setId((long) i);
+                    logInfo.setLineNo(i);
+                    logInfo.setLogName(line.trim());
+                    logInfo.setMessage(logString.get(i + 1).trim());
+                    logInfos.add(logInfo);
+                } else if (line.contains("Exception:")) {
+                    LogInfo logInfo = new LogInfo();
+                    logInfo.setId((long) i);
+                    logInfo.setLineNo(i);
+                    logInfo.setLogName(line.substring(0, line.indexOf("Exception:") + 10).trim());
+                    logInfo.setMessage(line.substring(line.indexOf("Exception:") + 11).trim());
+                    logInfos.add(logInfo);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        readLogFileRepository.saveAll(logInfos);
+//        readLogFileRepository.save(new LogInfo(loginfo.getId(),
+//    			loginfo.getLineNo(), loginfo.getLogName(), loginfo.getMessage()));
     }
     
-    public void updateLogInfo (long id, LogInfo loginfoUpdate) {
-    	LogInfo loginfo = readLogFileRepository.findById(id);
+    public void updateLogInfo (long id, LogInfo logInfoUpdate) {
+    	LogInfo loginfo = readLogFileRepository.findLogInfoById(id);
 
         loginfo.setId(id);
-        loginfo.setLineNo(loginfoUpdate.getLineNo());
-        loginfo.setLogName(loginfoUpdate.getLogName());
-        loginfo.setMessage(loginfoUpdate.getMessage());
-        readLogFileRepository.update(loginfo);
+        loginfo.setLineNo(logInfoUpdate.getLineNo());
+        loginfo.setLogName(logInfoUpdate.getLogName());
+        loginfo.setMessage(logInfoUpdate.getMessage());
+        readLogFileRepository.save(loginfo);
     }
     
-    public int deleteLogInfoById (long id) {
-        return readLogFileRepository.deleteById(id);
+    public void deleteLogInfoById (long id) {
+        readLogFileRepository.deleteById(String.valueOf(id));
     }
     
-    public int deleteAllLogInfo () {
-        return readLogFileRepository.deleteAll();
+    public void deleteAllLogInfo () {
+        readLogFileRepository.deleteAll();
     }
 }

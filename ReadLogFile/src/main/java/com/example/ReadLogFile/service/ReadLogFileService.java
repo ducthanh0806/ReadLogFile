@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReadLogFileService {
     ArrayList<LogInfoDto> readLogFile(File file) throws IOException;
@@ -16,11 +17,11 @@ public interface ReadLogFileService {
 
     LogInfoDto getLogInfoById(long id);
 
-    void createLogInfo(LogInfo loginfo);
+    void createLogInfo(File file);
 
     void updateLogInfo(long id, LogInfo loginfo);
 
-    int deleteLogInfoById(long id);
+    void deleteLogInfoById(long id);
 
-    int deleteAllLogInfo();
+    void deleteAllLogInfo();
 }

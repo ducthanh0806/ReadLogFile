@@ -5,12 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Setter
 @Getter
 @Entity
-@Builder
-@Data
 @Table(name = "USERS")
 @NoArgsConstructor
 @AllArgsConstructor

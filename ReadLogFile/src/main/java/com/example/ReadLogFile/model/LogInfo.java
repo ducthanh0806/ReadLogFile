@@ -7,11 +7,11 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Setter
 @Getter
 @Entity
-@Data
 @Table(name = "LOG_INFO")
 public class LogInfo {
     @Id
